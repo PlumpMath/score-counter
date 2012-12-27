@@ -1,0 +1,5 @@
+[{:name "Erik" :score 0 :add-key 81 :dec-key 65}
+ {:name "Jonas" :score 0 :add-key 87 :dec-key 83}
+ {:name "Klara" :score 0 :add-key 69 :dec-key 68}
+ {:name "Anna" :score 0 :add-key 82 :dec-key 70}
+ {:name "Henrik" :score 0 :add-key 84 :dec-key 71}]
