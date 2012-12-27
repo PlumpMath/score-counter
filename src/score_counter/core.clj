@@ -3,25 +3,28 @@
   (:import [java.awt.event KeyEvent])
   (:gen-class))
 
-(def teams (atom [{:name "Erik" :score 0 :add-key 81 :dec-key 65}]))
+(def teams (atom [{:name "Erik" :score 0 :inc-key 81 :dec-key 65}]))
 
 (defn setup []
   (text-font (create-font "Arial Black.ttf" 20)))
 
 (defn draw-team [nr team]
   (let [slice (/ (height) (count @teams))]
-    (fill 0)
+    (fill 30)
     (text-size (* 0.8 slice))
     (text (str (:name team) ": " (:score team))
           (+ 20)
           (+ (* 0.8 slice) (* slice nr)))))
 
+(defn osc [start end speed]
+  (let [diff (- end start)]
+    (+ start (/ diff 2) (* diff (sin (* speed (millis)))))))
+
 (defn draw []
-  (let [r (+ 200 (* 55 (sin (* 0.0003 (millis)))))
-        g (+ 155 (* 100 (sin (* 0.001 (millis)))))
-        b (+ 155 (* -100 (sin (* 0.0005 (millis)))))]
+  (let [r (osc 200 255 0.0003)
+        g (osc 155 100 0.001)
+        b (osc 100 100 0.0005)]
     (background r g b))
-  (fill 0)
   (doall (map (fn [[nr team]] (draw-team nr team))
               (zipmap (range) @teams))))
 
@@ -30,7 +33,7 @@
     (if (= (:name (get @teams index)) team-name)
       index
       (if (> index (count @teams))
-        (throw (Exception. (str "Can't find team " team-name ", index is " index)))
+        (throw (Exception. (str "Can't find team " team-name)))
         (recur (inc index))))))
 
 (defn change-score [team-name f]
@@ -40,6 +43,12 @@
         new-teams (assoc @teams team-index new-team)]
     (reset! teams new-teams)))
 
+(defn check-change-key [keykey f]
+  (if-let [team (first (filter (fn [team] 
+                                 (let [k (get team keykey)] (= k (key-code)))) 
+                               @teams))]
+          (change-score (:name team) f)))
+
 (defn key-pressed []
   (condp = (key-code)
     59 (do 
@@ -48,11 +57,9 @@
     76 (do
          (reset! teams (read-string (slurp "save.txt")))
          (println "Loaded save.txt"))
-      (do
-        (if-let [team (first (filter (fn [{k :add-key}] (= k (key-code))) @teams))]
-          (change-score (:name team) inc))
-        (if-let [team (first (filter (fn [{k :dec-key}] (= k (key-code))) @teams))]
-          (change-score (:name team) dec)))))
+    nil)
+  (check-change-key :inc-key inc)
+  (check-change-key :dec-key dec))
 
 (defn -main [& args]
        (defsketch score-counter
@@ -61,6 +68,3 @@
          :draw draw
          :key-pressed key-pressed
          :size [800 600]))
-
-
-
