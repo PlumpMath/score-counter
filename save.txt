@@ -1,1 +1,1 @@
-[{:name "Erik", :score 0, :add-key 81, :dec-key 65} {:name "Jonas", :score 0, :add-key 87, :dec-key 83} {:name "Klara", :score 0, :add-key 69, :dec-key 68} {:name "Anna", :score 0, :add-key 82, :dec-key 70} {:name "Henrik", :score 0, :add-key 84, :dec-key 71}]
+[{:dec-key 65, :score 0, :name "Erik", :inc-key 81} {:dec-key 83, :score 0, :name "Jonas", :inc-key 87} {:dec-key 68, :score 0, :name "Klara", :inc-key 69} {:dec-key 70, :score 0, :name "Anna", :inc-key 82} {:dec-key 71, :score 0, :name "Henrik & Mia", :inc-key 84}]

@@ -3,7 +3,12 @@
   (:import [java.awt.event KeyEvent])
   (:gen-class))
 
-(def teams (atom [{:name "Erik" :score 0 :inc-key 81 :dec-key 65}]))
+(def teams (atom [{:name "Erik" :score 0 :inc-key 81 :dec-key 65}
+                  {:name "Jonas" :score 0 :inc-key 87 :dec-key 83}
+                  {:name "Klara" :score 0 :inc-key 69 :dec-key 68}
+                  {:name "Anna" :score 0 :inc-key 82 :dec-key 70}
+                  {:name "Henrik & Mia" :score 0 :inc-key 84 :dec-key 71}
+                  ]))
 
 (defn setup []
   (text-font (create-font "Arial Black.ttf" 20)))
@@ -43,11 +48,12 @@
         new-teams (assoc @teams team-index new-team)]
     (reset! teams new-teams)))
 
+(defn get-value-of-key-in-team [team keykey]
+  (let [k (get team keykey)] (= k (key-code))))
+
 (defn check-change-key [keykey f]
-  (if-let [team (first (filter (fn [team] 
-                                 (let [k (get team keykey)] (= k (key-code)))) 
-                               @teams))]
-          (change-score (:name team) f)))
+  (if-let [team (first (filter #(get-value-of-key-in-team % keykey) @teams))]
+    (change-score (:name team) f)))
 
 (defn key-pressed []
   (condp = (key-code)
@@ -62,9 +68,9 @@
   (check-change-key :dec-key dec))
 
 (defn -main [& args]
-       (defsketch score-counter
-         :title "Score Counter"
-         :setup setup
-         :draw draw
-         :key-pressed key-pressed
-         :size [800 600]))
+  (defsketch score-counter
+    :title "Score Counter"
+    :setup setup
+    :draw draw
+    :key-pressed key-pressed
+    :size [800 600]))
